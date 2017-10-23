@@ -17,6 +17,7 @@ import {
 import Camera from "react-native-camera";
 import axios from "axios";
 import ReactNativeHeading from "react-native-heading";
+import _ from "lodash";
 
 import NearbyListView from './nearbyListView';
 
@@ -39,9 +40,12 @@ export default class App extends Component {
             });
         });
 
-        DeviceEventEmitter.addListener("headingUpdated", data => {
+        DeviceEventEmitter.addListener('headingUpdated', data => {
+            let lookingAt = this.computeLookingAt(data.heading, this.state.nearby);
+
             this.setState({
-                heading: data.heading
+                heading: data.heading,
+                nearby: lookingAt
             });
         });
 
@@ -70,29 +74,29 @@ export default class App extends Component {
         DeviceEventEmitter.removeAllListeners('headingUpdated');
     }
 
-  render() {
-    return <View style={styles.container}>
-        <Camera ref={cam => {
-            this.camera = cam;
-          }} style={styles.preview} aspect={Camera.constants.Aspect.fill}>
-          <NearbyListView style={styles.nearby} data={this.state.nearby} />
-          <View style={styles.gpsPosition}>
-            <Text style={styles.gpsPosition__text}>
-              Latitude: {this.state.latitude}
-            </Text>
-            <Text style={styles.gpsPosition__text}>
-              Longitude: {this.state.longitude}
-            </Text>
-            <Text style={styles.gpsPosition__text}>
-              Heading: {this.state.heading}
-            </Text>
-            {this.state.error ? <Text>
-                Error: {this.state.error}
-              </Text> : null}
-          </View>
-        </Camera>
-      </View>;
-  }
+    render() {
+        return <View style={styles.container}>
+            <Camera ref={cam => {
+                this.camera = cam;
+            }} style={styles.preview} aspect={Camera.constants.Aspect.fill}>
+            <NearbyListView style={styles.nearby} data={this.state.nearby} />
+            <View style={styles.gpsPosition}>
+                <Text style={styles.gpsPosition__text}>
+                Latitude: {this.state.latitude}
+                </Text>
+                <Text style={styles.gpsPosition__text}>
+                Longitude: {this.state.longitude}
+                </Text>
+                <Text style={styles.gpsPosition__text}>
+                Heading: {this.state.heading}
+                </Text>
+                {this.state.error ? <Text>
+                    Error: {this.state.error}
+                </Text> : null}
+            </View>
+            </Camera>
+        </View>;
+    }
 
     loadNearby(position) {
         const nearbyApi = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
@@ -107,11 +111,36 @@ export default class App extends Component {
             GOOGLE_API_KEY;
 
         return axios.get(nearbyApiUrl).then(data => {
-            this.setState({ nearby: data.data.results });
-            console.log('Nearby', data.data.results);
+            let nearbyWithTheta = this.calculateTheta(position, data.data.results);
+
+            this.setState({ nearby: nearbyWithTheta });
 
             return data;
         });
+    }
+
+    calculateTheta(position, nearby = []) {
+        nearby.forEach((near) => {
+            let theta = Math.atan2(
+                near.geometry.location.lng - position.coords.longitude,
+                near.geometry.location.lat - position.coords.latitude
+            );
+
+            // theta = (theta + Math.PI) * 360.0 / (2.0 * Math.PI);
+            theta = theta * 180 / Math.PI
+
+            near.theta = theta + Math.ceil(-theta / 360) * 360;
+        });
+
+        return nearby;
+    }
+
+    computeLookingAt(heading, nearby = []) {
+        nearby.forEach((near) => {
+            near.thetaHeading = near.theta ? Math.abs(heading - near.theta) : 0;
+        });
+
+        return _.sortBy(nearby, 'thetaHeading');
     }
 }
 

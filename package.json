@@ -9,6 +9,7 @@
 	"dependencies": {
 		"@google/maps": "^0.4.1",
 		"axios": "^0.16.2",
+		"lodash": "^4.17.4",
 		"react": "16.0.0-beta.5",
 		"react-native": "0.49.3",
 		"react-native-camera": "^0.10.0",

@@ -6,10 +6,6 @@ class NearbyListView extends React.Component {
     super(props);
   }
 
-  componentWillReceiveProps() {
-      console.log(this.props);
-  }
-
   render() {
     return (
         <FlatList
@@ -19,6 +15,8 @@ class NearbyListView extends React.Component {
             renderItem={data => (
                 <View style={styles.nearbyItem}>
                     <Text>{ data.item.name }</Text>
+                    <Text>Theta {data.item.theta}</Text>
+                    <Text>ThetaHeading {data.item.thetaHeading}</Text>
                 </View>
             )}
         />
