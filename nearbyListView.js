@@ -15,7 +15,6 @@ class NearbyListView extends React.Component {
             renderItem={data => (
                 <View style={styles.nearbyItem}>
                     <Text>{ data.item.name }</Text>
-                    <Text>Theta {data.item.theta}</Text>
                     <Text>ThetaHeading {data.item.thetaHeading}</Text>
                 </View>
             )}
