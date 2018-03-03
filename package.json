@@ -12,8 +12,9 @@
 		"lodash": "^4.17.4",
 		"react": "16.0.0-beta.5",
 		"react-native": "0.49.3",
-		"react-native-camera": "^0.10.0",
-		"react-native-heading": "^1.1.1"
+		"react-native-camera": "^1.0.0",
+		"react-native-heading": "^1.1.1",
+		"react-native-store-photos-album": "github:francisco-sanchez-molina/react-native-store-photos-album"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",

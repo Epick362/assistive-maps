@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-store-photos-album')
     compile project(':react-native-heading')
     compile project(':react-native-camera')
     compile fileTree(dir: "libs", include: ["*.jar"])

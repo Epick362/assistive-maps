@@ -12,14 +12,19 @@ import {
     Text,
     TouchableHighlight,
     View,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    CameraRoll,
+    Alert,
+    Modal
 } from "react-native";
-import Camera from "react-native-camera";
+import { RNCamera } from "react-native-camera";
 import axios from "axios";
 import ReactNativeHeading from "react-native-heading";
 import _ from "lodash";
+import CameraRollExtended from 'react-native-store-photos-album';
 
 import NearbyListView from './nearbyListView';
+import PhotoGallery from './PhotoGallery';
 
 export default class App extends Component {
     constructor(props) {
@@ -29,6 +34,7 @@ export default class App extends Component {
             latitude: null, 
             longitude: null,
             error: null,
+            galleryVisible: false,
             nearby: []
         };
     }
@@ -41,11 +47,12 @@ export default class App extends Component {
         });
 
         DeviceEventEmitter.addListener('headingUpdated', data => {
-            let lookingAt = this.computeLookingAt(data.heading, this.state.nearby);
+            let lookingAt = this.updateWorldData(data.heading, this.state.nearby);
 
             this.setState({
                 heading: data.heading,
-                nearby: lookingAt
+                nearby: lookingAt,
+                targets: lookingAt.slice(0, 3)
             });
         });
 
@@ -76,26 +83,54 @@ export default class App extends Component {
 
     render() {
         return <View style={styles.container}>
-            <Camera ref={cam => {
+            <RNCamera ref={cam => {
                 this.camera = cam;
-            }} style={styles.preview} aspect={Camera.constants.Aspect.fill}>
-            <NearbyListView style={styles.nearby} data={this.state.nearby} />
-            <View style={styles.gpsPosition}>
-                <Text style={styles.gpsPosition__text}>
-                Latitude: {this.state.latitude}
+            }} style={styles.preview}>
+                <NearbyListView style={styles.nearby} data={this.state.targets} />
+                <Text style={styles.capture} onPress={this.takePicture.bind(this)}>
+                    [CAPTURE]
                 </Text>
-                <Text style={styles.gpsPosition__text}>
-                Longitude: {this.state.longitude}
+                <Text style={styles.capture} onPress={this.toggleModal}>
+                    [Gallery]
                 </Text>
-                <Text style={styles.gpsPosition__text}>
-                Heading: {this.state.heading}
-                </Text>
-                {this.state.error ? <Text>
-                    Error: {this.state.error}
-                </Text> : null}
-            </View>
-            </Camera>
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.galleryVisible}
+                >
+                    <PhotoGallery toggleModal={this.toggleModal}></PhotoGallery>
+                </Modal>
+                <View style={styles.gpsPosition}>
+                    <Text style={styles.gpsPosition__text}>
+                    LAT: {this.state.latitude}
+                    </Text>
+                    <Text style={styles.gpsPosition__text}>
+                    LNG: {this.state.longitude}
+                    </Text>
+                    <Text style={styles.gpsPosition__text}>
+                    Heading: {this.state.heading}
+                    </Text>
+                    {this.state.error ? <Text>
+                        Error: {this.state.error}
+                    </Text> : null}
+                </View>
+            </RNCamera>
         </View>;
+    }
+    
+    toggleModal = () => {
+        this.setState({ galleryVisible: !this.state.galleryVisible });
+    }
+
+    takePicture() {
+        this.camera.takePictureAsync()
+        .then((data) => {
+            CameraRollExtended.saveToCameraRoll({uri: data.uri, album: 'Assistive Maps'}, 'photo')
+            .then(Alert.alert('Success', 'Photo added to album!'))
+            // CameraRoll.saveToCameraRoll(data.uri)
+            // .then(Alert.alert('Success', 'Photo added to camera roll!'))
+        })
+        .catch(err => console.error(err));
     }
 
     loadNearby(position) {
@@ -111,33 +146,58 @@ export default class App extends Component {
             GOOGLE_API_KEY;
 
         return axios.get(nearbyApiUrl).then(data => {
-            let nearbyWithTheta = this.calculateTheta(position, data.data.results);
+            let processedNearby = this.processNearbyData(position, data.data.results);
 
-            this.setState({ nearby: nearbyWithTheta });
+            this.setState({ nearby: processedNearby });
 
             return data;
         });
     }
 
-    calculateTheta(position, nearby = []) {
-        nearby.forEach((near) => {
-            let theta = Math.atan2(
-                near.geometry.location.lng - position.coords.longitude,
-                near.geometry.location.lat - position.coords.latitude
-            );
+    processNearbyData(position, nearby = []) {
+        nearby = _.map(nearby, (near) => {
+            near.coords = {
+                latitude: near.geometry.location.lat,
+                longitude: near.geometry.location.lng
+            };
+            near.theta = this.calculateTheta(position.coords, near.coords);
 
-            // theta = (theta + Math.PI) * 360.0 / (2.0 * Math.PI);
-            theta = theta * 180 / Math.PI
-
-            near.theta = theta + Math.ceil(-theta / 360) * 360;
+            return near;
         });
 
         return nearby;
     }
 
-    computeLookingAt(heading, nearby = []) {
+    calculateTheta(point1, point2) {
+        let theta = Math.atan2(
+            point2.longitude - point1.longitude,
+            point2.latitude - point1.latitude
+        );
+
+        // theta = (theta + Math.PI) * 360.0 / (2.0 * Math.PI);
+        theta = theta * 180 / Math.PI;
+
+        return theta + Math.ceil(-theta / 360) * 360;
+    }
+
+    calculateDistance(point1, point2) {
+        // Fast Haversine distance
+        let p = 0.017453292519943295;    // Math.PI / 180
+        let c = Math.cos;
+        let a = 0.5 - c((point2.latitude - point1.latitude) * p)/2 + 
+                c(point1.latitude * p) * c(point2.latitude * p) * 
+                (1 - c((point2.longitude - point1.longitude) * p))/2;
+
+        return 12742 * Math.asin(Math.sqrt(a)) * 1000; // 2 * R; R = 6371 km
+    }
+
+    updateWorldData(heading, nearby = []) {
+        let { latitude, longitude } = this.state;
+
+
         nearby.forEach((near) => {
             near.thetaHeading = near.theta ? Math.abs(heading - near.theta) : 0;
+            near.distance = this.calculateDistance(near.coords, { latitude, longitude });
         });
 
         return _.sortBy(nearby, 'thetaHeading');
@@ -166,7 +226,9 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     'nearby': {
-        flex: 0,
-        height: 200
+        flex: 0
+    },
+    'capture': {
+        margin: 20
     }
 });

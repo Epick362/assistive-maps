@@ -15,8 +15,8 @@ class NearbyListView extends React.Component {
             renderItem={data => (
                 <View style={styles.nearbyItem}>
                     <Text>{ data.item.name }</Text>
-                    <Text>Theta {data.item.theta}</Text>
-                    <Text>ThetaHeading {data.item.thetaHeading}</Text>
+                    <Text>Distance {Math.round(data.item.distance)}m</Text>
+                    <Text>Heading {Math.floor(data.item.thetaHeading)}°</Text>
                 </View>
             )}
         />
@@ -28,11 +28,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 5
   },
   nearbyItem: {
-    padding: 20
+    padding: 10
   }
 });
 
