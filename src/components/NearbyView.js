@@ -1,11 +1,12 @@
-import React from "react";
-import { View, FlatList, StyleSheet, Text } from "react-native";
+import React, { Component } from "react";
+import { 
+    View,
+    FlatList, 
+    StyleSheet, 
+    Text 
+} from "react-native";
 
-class NearbyListView extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class NearbyView extends Component {
   render() {
     return (
         <FlatList
@@ -27,7 +28,6 @@ class NearbyListView extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 5
   },
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default NearbyListView;
+export default NearbyView;

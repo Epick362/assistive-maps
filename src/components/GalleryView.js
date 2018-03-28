@@ -14,7 +14,7 @@ import {
 
 const { width } = Dimensions.get('window')
 
-class PhotoGallery extends Component {
+class GalleryView extends Component {
     constructor(props) {
         super(props);
 
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PhotoGallery;
+export default GalleryView;
