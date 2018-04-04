@@ -11,6 +11,9 @@ import {
     TouchableHighlight,
     Dimensions
 } from "react-native";
+import RNPhotosFramework from 'react-native-photos-framework';
+import Storage from '../models/Storage';
+import Gallery from '../models/Gallery';
 
 const { width } = Dimensions.get('window')
 
@@ -24,14 +27,10 @@ class GalleryView extends Component {
     }
 
     componentDidMount() {
-        CameraRoll.getPhotos({
-            first: 20,
-            groupTypes: 'Album',
-            groupName: 'Assistive Maps'
-        })
+        Gallery.load()
         .then(photos => {
             this.setState({
-                photos: photos.edges
+                photos: photos.assets
             });
         })
     }
@@ -43,23 +42,22 @@ class GalleryView extends Component {
                     title='Close'
                     onPress={this.props.toggleModal}
                 />
-                <ScrollView
-                    contentContainerStyle={styles.scrollView}>
+                <ScrollView contentContainerStyle={styles.scrollView}>
                     {
                         this.state.photos.map((p, i) => {
                         return (
                             <TouchableHighlight
                             key={i}
                             underlayColor='transparent'
-                            // onPress={() => this.setIndex(i)}
+                            onPress={() => this.setIndex(i)}
                             >
-                            <Image
-                                style={{
-                                width: width/3,
-                                height: width/3
-                                }}
-                                source={{uri: p.node.image.uri}}
-                            />
+                                <Image
+                                    style={{
+                                    width: width/3,
+                                    height: width/3
+                                    }}
+                                    source={p.image}
+                                />
                             </TouchableHighlight>
                         )
                         })
@@ -69,8 +67,13 @@ class GalleryView extends Component {
         )
     }
 
-    closeGallery() {
-
+    setIndex(i) {
+        console.log('index', i);
+        console.log('photo data', this.state.photos[i]);
+        Storage.getPhotoByIdentifier(this.state.photos[i].localIdentifier)
+        .then((data) => {
+            console.log('photo metadata', data);  
+        })
     }
 }
 

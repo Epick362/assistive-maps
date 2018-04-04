@@ -11,7 +11,8 @@ import {
     TouchableHighlight,
     Dimensions,
     DeviceEventEmitter,
-    Modal
+    Modal,
+    PanResponder
 } from "react-native";
 
 import { RNCamera } from "react-native-camera";
@@ -27,15 +28,37 @@ import NearbyPlaces from '../models/NearbyPlaces';
 
 const { width } = Dimensions.get('window')
 
+const getDirection = ({ moveX, moveY, dx, dy }) => {
+    const draggedDown = dy > 30;
+    const draggedUp = dy < -30;
+    const draggedLeft = dx < -30;
+    const draggedRight = dx > 30;
+    let dragDirection = "";
+  
+    if (draggedDown || draggedUp) {
+      if (draggedDown) dragDirection += "dragged down ";
+      if (draggedUp) dragDirection += "dragged up ";
+    }
+  
+    if (draggedLeft || draggedRight) {
+      if (draggedLeft) dragDirection += "dragged left ";
+      if (draggedRight) dragDirection += "dragged right ";
+    }
+  
+    return dragDirection;
+};
+
 class CaptureView extends Component {
     constructor(props) {
         super(props);
 
         this.state = { 
+            drag: '',
             heading: 0,
             latitude: 0, 
             longitude: 0,
             galleryVisible: false,
+            error: null,
             nearby: []
         };
     }
@@ -59,41 +82,36 @@ class CaptureView extends Component {
         navigator.geolocation.watchPosition(this.updateLocation, this.errorLocation, locationOptions);
     }
 
+    componentWillMount() {
+        let debouncedDrag = _.debounce((drag) => {
+                console.log(drag);
+        }, 200, {trailing: true});
+
+        this._panResponder = PanResponder.create({
+            onMoveShouldSetPanResponder: (evt, gestureState) => !!getDirection(gestureState),
+            onPanResponderMove: (evt, gestureState) => {
+                const drag = getDirection(gestureState);
+
+                debouncedDrag(drag);
+            },
+            onPanResponderTerminationRequest: (evt, gestureState) => true,
+        });
+    }
+
     componentWillUnmount() {
         ReactNativeHeading.stop();
         DeviceEventEmitter.removeAllListeners('headingUpdated');
     }
 
     render() {
-        return <View style={styles.container}>
+        return <View style={styles.container} {...this._panResponder.panHandlers}>
             <RNCamera ref={cam => {
                 this.camera = cam;
             }} style={styles.preview}>
-                <View style={styles.nearby}>
-                    <NearbyView data={this.state.targets} />
-                </View>
+                <TouchableHighlight style={styles.touchableCapture} onPress={this.takePicture.bind(this)}>
+                    <View />
+                </TouchableHighlight>
                 <View style={styles.bottomActions}>
-                    <TouchableHighlight 
-                        style={styles.capture} 
-                        onPress={this.takePicture.bind(this)}
-                        underlayColor="rgba(255, 255, 255, 0.5)">
-                        <View />
-                    </TouchableHighlight>
-
-                    <View style={styles.gpsPosition}>
-                        <Text style={styles.gpsPosition__text}>
-                        LAT: {this.state.latitude.toFixed(3)}°
-                        </Text>
-                        <Text style={styles.gpsPosition__text}>
-                        LNG: {this.state.longitude.toFixed(3)}°
-                        </Text>
-                        <Text style={styles.gpsPosition__text}>
-                        Heading: { Math.round(this.state.heading) }°
-                        </Text>
-                        {this.state.error ? <Text>
-                            Error: {this.state.error}
-                        </Text> : null}
-                    </View>
                     <TouchableHighlight 
                         style={styles.gallery}
                         onPress={this.toggleModal}
@@ -118,8 +136,6 @@ class CaptureView extends Component {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         });
-
-        console.log(NearbyPlaces);
 
         NearbyPlaces.getNearby(position).then(data => {
             let processedNearby = this.processNearbyData(position, data.data.results);
@@ -152,7 +168,18 @@ class CaptureView extends Component {
         let photo = new Photo();
 
         this.camera.takePictureAsync()
-        .then(photo.save)
+        .then(data => {
+            let metaData = {
+                location: {
+                    latitude: this.state.latitude,
+                    longitude: this.state.longitude
+                },
+                heading: this.state.heading,
+                nearby: this.state.targets
+            }
+
+            return photo.save(data, metaData);
+        })
         .catch(err => console.error(err));
     }
 
@@ -235,6 +262,13 @@ const styles = StyleSheet.create({
         borderColor: '#FF4400',
         marginBottom: 15,
         marginTop: 20
+    },
+    'touchableCapture': {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
     }
 });
 
