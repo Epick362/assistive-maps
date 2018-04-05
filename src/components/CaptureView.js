@@ -136,8 +136,12 @@ class CaptureView extends Component {
         });
     }
     
-    toggleModal = () => {
-        this.setState({ galleryVisible: !this.state.galleryVisible });
+    openModal = () => {
+        this.setState({ galleryVisible: true });
+    }
+
+    closeModal = () => {
+        this.setState({ galleryVisible: false });
     }
 
     takePicture = () => {
@@ -228,7 +232,11 @@ class CaptureView extends Component {
 
     dragResponder = (direction) => {
         if (direction === DIRECTION_UP) {
-            this.toggleModal();
+            this.openModal();
+        }
+
+        if (direction === DIRECTION_DOWN) {
+            this.closeModal();
         }
     }
 }

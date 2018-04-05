@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-const PHOTOS_LIBRARY_KEY = 'photos';
+export const PHOTOS_LIBRARY_KEY = 'photos';
 
 class Storage {
     static save(key, data) {
