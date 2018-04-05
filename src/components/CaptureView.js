@@ -26,27 +26,14 @@ import Location from '../models/Location';
 import Photo from '../models/Photo';
 import NearbyPlaces from '../models/NearbyPlaces';
 
-const { width } = Dimensions.get('window')
+import {
+    DIRECTION_DOWN,
+    DIRECTION_UP,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT
+} from '../constants';
 
-const getDirection = ({ moveX, moveY, dx, dy }) => {
-    const draggedDown = dy > 30;
-    const draggedUp = dy < -30;
-    const draggedLeft = dx < -30;
-    const draggedRight = dx > 30;
-    let dragDirection = "";
-  
-    if (draggedDown || draggedUp) {
-      if (draggedDown) dragDirection += "dragged down ";
-      if (draggedUp) dragDirection += "dragged up ";
-    }
-  
-    if (draggedLeft || draggedRight) {
-      if (draggedLeft) dragDirection += "dragged left ";
-      if (draggedRight) dragDirection += "dragged right ";
-    }
-  
-    return dragDirection;
-};
+const { width } = Dimensions.get('window')
 
 class CaptureView extends Component {
     constructor(props) {
@@ -83,16 +70,14 @@ class CaptureView extends Component {
     }
 
     componentWillMount() {
-        let debouncedDrag = _.debounce((drag) => {
-                console.log(drag);
-        }, 200, {trailing: true});
+        let debouncedDragResponder = _.debounce(this.dragResponder, 200, {trailing: true});
 
         this._panResponder = PanResponder.create({
-            onMoveShouldSetPanResponder: (evt, gestureState) => !!getDirection(gestureState),
+            onMoveShouldSetPanResponder: (evt, gestureState) => !!this.getDirection(gestureState),
             onPanResponderMove: (evt, gestureState) => {
-                const drag = getDirection(gestureState);
+                const drag = this.getDirection(gestureState);
 
-                debouncedDrag(drag);
+                debouncedDragResponder(drag);
             },
             onPanResponderTerminationRequest: (evt, gestureState) => true,
         });
@@ -111,15 +96,6 @@ class CaptureView extends Component {
                 <TouchableHighlight style={styles.touchableCapture} onPress={this.takePicture.bind(this)}>
                     <View />
                 </TouchableHighlight>
-                <View style={styles.bottomActions}>
-                    <TouchableHighlight 
-                        style={styles.gallery}
-                        onPress={this.toggleModal}
-                        underlayColor="rgba(255, 255, 255, 0.5)">
-                       <View />
-                    </TouchableHighlight>
-                </View>
-                
                 <Modal
                     animationType={"slide"}
                     transparent={false}
@@ -164,26 +140,32 @@ class CaptureView extends Component {
         this.setState({ galleryVisible: !this.state.galleryVisible });
     }
 
-    takePicture() {
+    takePicture = () => {
         let photo = new Photo();
+        let photoData = null;
+        let metaData = {
+            location: {
+                latitude: this.state.latitude,
+                longitude: this.state.longitude
+            },
+            heading: this.state.heading,
+            nearby: this.state.targets
+        }
 
         this.camera.takePictureAsync()
         .then(data => {
-            let metaData = {
-                location: {
-                    latitude: this.state.latitude,
-                    longitude: this.state.longitude
-                },
-                heading: this.state.heading,
-                nearby: this.state.targets
-            }
+            photoData = data;
+            return this.loadAddress(metaData.location);
+        })
+        .then(streetData => {
+            metaData.street = streetData;
 
-            return photo.save(data, metaData);
+            return photo.save(photoData, metaData);
         })
         .catch(err => console.error(err));
     }
 
-    processNearbyData(position, nearby = []) {
+    processNearbyData = (position, nearby = []) => {
         nearby = _.map(nearby, (near) => {
             near.coords = {
                 latitude: near.geometry.location.lat,
@@ -197,7 +179,18 @@ class CaptureView extends Component {
         return nearby;
     }
 
-    updateWorldData(heading, nearby = []) {
+    loadAddress = (location) => {
+        return NearbyPlaces.getStreetName(location)
+        .then((streetData) => {
+            if (streetData.data.results[0]) {
+                return streetData.data.results[0];
+            }
+
+            return null;
+        });
+    }
+
+    updateWorldData = (heading, nearby = []) => {
         let { latitude, longitude } = this.state;
 
         nearby.forEach((near) => {
@@ -206,6 +199,37 @@ class CaptureView extends Component {
         });
 
         return _.sortBy(nearby, 'thetaHeading');
+    }
+
+    getDirection = ({ moveX, moveY, dx, dy }) => {
+        const draggedDown = dy > 30;
+        const draggedUp = dy < -30;
+        const draggedLeft = dx < -30;
+        const draggedRight = dx > 30;
+    
+        if (draggedDown) {
+            return DIRECTION_DOWN;
+        }
+
+        if (draggedUp) {
+            return DIRECTION_UP;
+        }
+
+        if (draggedLeft) {
+            return DIRECTION_LEFT;
+        }
+
+        if (draggedRight) {
+            return DIRECTION_RIGHT;
+        }
+    
+        return null;
+    }
+
+    dragResponder = (direction) => {
+        if (direction === DIRECTION_UP) {
+            this.toggleModal();
+        }
     }
 }
 

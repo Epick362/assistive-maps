@@ -14,6 +14,7 @@ import {
 import RNPhotosFramework from 'react-native-photos-framework';
 import Storage from '../models/Storage';
 import Gallery from '../models/Gallery';
+import NearbyPlaces from "../models/NearbyPlaces";
 
 const { width } = Dimensions.get('window')
 
@@ -72,7 +73,7 @@ class GalleryView extends Component {
         console.log('photo data', this.state.photos[i]);
         Storage.getPhotoByIdentifier(this.state.photos[i].localIdentifier)
         .then((data) => {
-            console.log('photo metadata', data);  
+            console.log('photo metadata', data);
         })
     }
 }
