@@ -17,7 +17,8 @@
 		"react-native-heading": "^1.1.1",
 		"react-native-photos-framework": "https://github.com/olofd/react-native-photos-framework.git#adaa91d8bd13e93cb18c5884d9fde27228a44ebb",
 		"react-native-snap-carousel": "^3.6.0",
-		"react-native-store-photos-album": "github:francisco-sanchez-molina/react-native-store-photos-album"
+		"react-native-store-photos-album": "github:francisco-sanchez-molina/react-native-store-photos-album",
+		"react-native-tts": "^1.5.0"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",

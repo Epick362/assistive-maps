@@ -18,6 +18,7 @@ import {
 import { RNCamera } from "react-native-camera";
 import ReactNativeHeading from "react-native-heading";
 import _ from "lodash";
+import Tts from 'react-native-tts';
 
 import NearbyView from './NearbyView';
 import GalleryView from './GalleryView';
@@ -67,6 +68,8 @@ class CaptureView extends Component {
         };
 
         navigator.geolocation.watchPosition(this.updateLocation, this.errorLocation, locationOptions);
+
+        Tts.setDefaultLanguage('cs-CZ');
     }
 
     componentWillMount() {
@@ -101,8 +104,12 @@ class CaptureView extends Component {
                     transparent={false}
                     visible={this.state.galleryVisible}
                 >
-                    <GalleryView toggleModal={this.toggleModal}></GalleryView>
+                    <GalleryView></GalleryView>
                 </Modal>
+                <View style={styles.helpBottom}>
+                    <Text style={styles.helpBottomText}>Potiahni hore pre otvorenie Galérie</Text>
+                    <Text style={styles.helpBottomText}>Dotkni sa kamkoľvek pre odfotenie</Text>
+                </View>
             </RNCamera>
         </View>;
     }
@@ -153,8 +160,11 @@ class CaptureView extends Component {
                 longitude: this.state.longitude
             },
             heading: this.state.heading,
-            nearby: this.state.targets
+            nearby: this.state.targets,
+            timestamp: new Date()
         }
+
+        Tts.speak('Cvak!');
 
         this.camera.takePictureAsync()
         .then(data => {
@@ -206,10 +216,10 @@ class CaptureView extends Component {
     }
 
     getDirection = ({ moveX, moveY, dx, dy }) => {
-        const draggedDown = dy > 30;
-        const draggedUp = dy < -30;
-        const draggedLeft = dx < -30;
-        const draggedRight = dx > 30;
+        const draggedDown = dy > 60;
+        const draggedUp = dy < -60;
+        const draggedLeft = dx < -60;
+        const draggedRight = dx > 60;
     
         if (draggedDown) {
             return DIRECTION_DOWN;
@@ -232,10 +242,12 @@ class CaptureView extends Component {
 
     dragResponder = (direction) => {
         if (direction === DIRECTION_UP) {
+            Tts.speak('Galeria otvorena');
             this.openModal();
         }
 
         if (direction === DIRECTION_DOWN) {
+            Tts.speak('Galeria zatvorena');
             this.closeModal();
         }
     }
@@ -301,6 +313,21 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0
+    },
+    helpBottom: {
+        position: 'absolute',
+        alignSelf: 'center',
+        bottom: 30,
+        backgroundColor: '#FFF',
+        borderRadius: 10,
+        padding: 10
+    },
+    helpBottomText: {
+        color: '#202020',
+        fontSize: 16,
+        textAlign: 'center',
+        marginVertical: 5,
+        backgroundColor: 'transparent',
     }
 });
 

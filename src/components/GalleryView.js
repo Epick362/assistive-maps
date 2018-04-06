@@ -8,11 +8,13 @@ import {
     Alert,
     Button,
     ScrollView,
-    TouchableHighlight,
+    TouchableOpacity,
     Dimensions
 } from "react-native";
 import RNPhotosFramework from 'react-native-photos-framework';
 import Carousel from 'react-native-snap-carousel';
+import Tts from 'react-native-tts';
+
 import Storage, {PHOTOS_LIBRARY_KEY} from '../models/Storage';
 import Gallery from '../models/Gallery';
 import NearbyPlaces from "../models/NearbyPlaces";
@@ -40,6 +42,31 @@ class GalleryView extends Component {
         };
     }
 
+    tapPhoto = (photo) => {
+        let ttsContent = 'Fotka ';
+
+        if (photo.metaData) {
+            if (photo.metaData.street && photo.metaData.street.formatted_address) {
+                ttsContent += 'odfotena na ulici '+ photo.metaData.street.formatted_address + '. ';
+            }
+
+            if (photo.metaData.nearby.length > 0) {
+                ttsContent += 'Blízke miesta: ';
+                let nearbyNames = photo.metaData.nearby.map((near) => near.name);
+                ttsContent += nearbyNames.join(',');
+                ttsContent += '.';
+            }
+
+            if (photo.metaData.timestamp) {
+                let date = new Date(photo.metaData.timestamp);
+                let humanDate = date.toLocaleString('cs-CZ');
+                ttsContent += 'Fotka bola vytvorená dňa '+ humanDate;
+            }
+        }
+
+        Tts.speak(ttsContent);
+    }
+
     componentDidMount() {
         Gallery.load()
         .then(photos => {
@@ -63,20 +90,51 @@ class GalleryView extends Component {
         })
     }
 
-    _renderItem ({item, index}) {
+    _renderItem = ({item, index}) => {
         return (
+            <TouchableOpacity onPress={() => this.tapPhoto(item)}>
             <View style={styles.slideInnerContainer}>
-                <Text style={styles.title}>{ item.localIdentifier }</Text>
                 <View style={styles.imageContainer}>
                     <Image
                         style={styles.image}
                         source={item.image}
                     />
                 </View>
-                <Text>
-                    { JSON.stringify(item.metaData) }
-                </Text>
+                {
+                    item.metaData &&
+                    <View style={styles.metadataContainer}>
+                        <Text style={styles.propertyTitle}>
+                            Nazov ulice
+                        </Text>
+                        <Text style={styles.propertyValue}>
+                            {item.metaData.street.formatted_address}
+                        </Text>
+                        
+                        <Text style={styles.propertyTitle}>
+                           Blízke miesta
+                        </Text>
+                        <View style={styles.propertyValue}>
+                            {
+                                item.metaData.nearby.map((near, i) => {
+                                    return (
+                                        <Text key={i}>{ near.name }</Text>
+                                    )
+                                })
+                            }
+                        </View>
+
+                        <Text style={styles.propertyTitle}>
+                            GPS lokácia
+                        </Text>
+                        <View style={styles.propertyValue}>
+                            <Text>Latitude: {item.metaData.location.latitude}</Text>
+                            <Text>Longitude: {item.metaData.location.longitude}</Text>
+                            <Text>Smer: {item.metaData.heading}˚</Text>
+                        </View>
+                    </View>
+                }
             </View>
+            </TouchableOpacity>
         );
     }
 
@@ -90,17 +148,10 @@ class GalleryView extends Component {
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
                 />
+
+                <Text style={styles.closeGallery}>Potiahni dole pre zatvorenie Galérie</Text>
             </View>
         )
-    }
-
-    setIndex(i) {
-        console.log('index', i);
-        console.log('photo data', this.state.photos[i]);
-        Storage.getPhotoByIdentifier(this.state.photos[i].localIdentifier)
-        .then((data) => {
-            console.log('photo metadata', data);
-        })
     }
 }
 
@@ -115,12 +166,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: itemHorizontalMargin
     },
     imageContainer: {
-        backgroundColor: 'white'
+        marginVertical: 20
     },
     image: {
         width: itemWidth,
-        height: 200,
+        height: 300,
         resizeMode: 'contain'
+    },
+    propertyTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginVertical: 5
+    },
+    propertyValue: {
+
+    },
+    closeGallery: {
+        position: 'absolute',
+        bottom: 20,
+        alignSelf: 'center',
+        fontSize: 16
     }
 })
 
