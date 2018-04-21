@@ -202,14 +202,20 @@ class CaptureView extends Component {
         }
 
         // Tts.speak('Cvak!');
+        // if (photo.metaData.nearby.length > 0) {
+        //     ttsContent += 'Blízke miesta: ';
+        //     let nearbyNames = photo.metaData.nearby.map((near) => near.name);
+        //     ttsContent += nearbyNames.join(',');
+        //     ttsContent += '.';
+        // }
+        // + NAHRAT meno fotky cez voice recognition
 
         this.camera.takePictureAsync()
         .then(data => {
             photoData = data;
-            setTimeout(() => {
-                Voice.start('cs-CZ');
-                console.log('voice started');
-            }, 1000);
+
+            Voice.start('cs-CZ');
+            console.log('voice started');
 
             return this.loadAddress(metaData.location);
         })

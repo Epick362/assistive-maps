@@ -5,7 +5,7 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import net.no_mad.tts.TextToSpeechPackage;
 import com.devialab.camerarollextended.CameraRollExtendedManager;
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -28,7 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new TextToSpeechPackage(),
             new CameraRollExtendedManager(),
-            new RCTCameraPackage()
+            new RNCameraPackage()
       );
     }
 
