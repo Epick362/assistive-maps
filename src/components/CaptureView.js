@@ -19,13 +19,14 @@ import { RNCamera } from "react-native-camera";
 import ReactNativeHeading from "react-native-heading";
 import _ from "lodash";
 import Tts from 'react-native-tts';
+import Voice from 'react-native-voice';
 
 import NearbyView from './NearbyView';
 import GalleryView from './GalleryView';
 
 import Location from '../models/Location';
 import Photo from '../models/Photo';
-import NearbyPlaces from '../models/NearbyPlaces';
+import Maps from '../models/Maps';
 
 import {
     DIRECTION_DOWN,
@@ -49,7 +50,43 @@ class CaptureView extends Component {
             error: null,
             nearby: []
         };
-    }
+
+
+        Voice.onSpeechStart = this.onSpeechStartHandler.bind(this);
+        Voice.onSpeechEnd = this.onSpeechEndHandler.bind(this);
+        Voice.onSpeechPartialResults = this.onSpeechPartialResultsHandler.bind(this);
+        Voice.onSpeechResults = this.onSpeechResultsHandler.bind(this);
+        Voice.onSpeechError = this.onSpeechErrorHandler.bind(this);
+        // Note: consider using Voice.removeAllListeners() if this component unmounts during speech recognition
+      }
+    
+      onSpeechStartHandler() {
+        console.log("Speech started");
+        // Update state to notify user that speech recognition has started
+      }
+    
+       onSpeechPartialResultsHandler(e) {
+        // e = { value: string[] }
+        // Loop through e.value for speech transcription results
+        console.log("Partial results", e);
+      }
+    
+      onSpeechResultsHandler(e) {
+        // e = { value: string[] }
+        // Loop through e.value for speech transcription results
+        console.log("Speech results", e);
+      }
+    
+      onSpeechEndHandler(e) {
+        // e = { error?: boolean }
+        console.log("Speech ended", e);
+      }
+    
+      onSpeechErrorHandler(e) {
+        // e = { code?: string, message?: string }
+        console.log("Speech error", e);
+      }
+    
 
     componentDidMount() {
         ReactNativeHeading.start(5).then(didStart => {
@@ -120,7 +157,7 @@ class CaptureView extends Component {
             longitude: position.coords.longitude
         });
 
-        NearbyPlaces.getNearby(position).then(data => {
+        Maps.getNearby(position).then(data => {
             let processedNearby = this.processNearbyData(position, data.data.results);
 
             this.setState({ nearby: processedNearby });
@@ -164,11 +201,16 @@ class CaptureView extends Component {
             timestamp: new Date()
         }
 
-        Tts.speak('Cvak!');
+        // Tts.speak('Cvak!');
 
         this.camera.takePictureAsync()
         .then(data => {
             photoData = data;
+            setTimeout(() => {
+                Voice.start('cs-CZ');
+                console.log('voice started');
+            }, 1000);
+
             return this.loadAddress(metaData.location);
         })
         .then(streetData => {
@@ -194,7 +236,7 @@ class CaptureView extends Component {
     }
 
     loadAddress = (location) => {
-        return NearbyPlaces.getStreetName(location)
+        return Maps.getStreetName(location)
         .then((streetData) => {
             if (streetData.data.results[0]) {
                 return streetData.data.results[0];

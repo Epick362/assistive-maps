@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-voice')
     compile project(':react-native-tts')
     compile project(':react-native-store-photos-album')
     compile project(':react-native-heading')

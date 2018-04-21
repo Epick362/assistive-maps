@@ -2,7 +2,7 @@ import axios from "axios";
 
 const GOOGLE_API_KEY = "AIzaSyDAIqv6972rtwEXJI0lTlNCy3yBp_XZuME";
 
-class NearbyPlaces {
+class Maps {
     static getNearby(position) {
         const nearbyApi = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
 
@@ -30,4 +30,4 @@ class NearbyPlaces {
     }
 }
 
-export default NearbyPlaces;
+export default Maps;

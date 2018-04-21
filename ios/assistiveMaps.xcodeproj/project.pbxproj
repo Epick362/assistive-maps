@@ -35,6 +35,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* assistiveMapsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* assistiveMapsTests.m */; };
+		3BCBEAEFFCAC45E0B9BCC8EF /* libVoice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DEFB589698146F7B2922901 /* libVoice.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		64FD438E204ABDEA00668FA2 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FD438C204ABDDD00668FA2 /* libRCTCameraRoll.a */; };
 		7FB90A45C51443D3B628364F /* libReactNativeStorePhotosAlbum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EA8302F7FA478F9E31D9C1 /* libReactNativeStorePhotosAlbum.a */; };
@@ -270,6 +271,13 @@
 			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
 			remoteInfo = "double-conversion-tvOS";
 		};
+		64D42CF0208799EC00FF7570 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3F689A00A93F4A9DB9457FA0 /* Voice.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC0729B51EF78E41004EBC83;
+			remoteInfo = Voice;
+		};
 		64EF5D1F1F8BE67E009EC3C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -352,6 +360,7 @@
 		00E356EE1AD99517003FC87E /* assistiveMapsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = assistiveMapsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* assistiveMapsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = assistiveMapsTests.m; sourceTree = "<group>"; };
+		0DEFB589698146F7B2922901 /* libVoice.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libVoice.a; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* assistiveMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = assistiveMaps.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -367,6 +376,7 @@
 		2D02E47B1E0B4A5D006451C7 /* assistiveMaps-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "assistiveMaps-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* assistiveMaps-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "assistiveMaps-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30D125175C75457180406ECD /* libReactNativeHeading.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeHeading.a; sourceTree = "<group>"; };
+		3F689A00A93F4A9DB9457FA0 /* Voice.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Voice.xcodeproj; path = "../node_modules/react-native-voice/ios/Voice.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		64FD4387204ABDDD00668FA2 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		655DBCACB8CC443580501923 /* ReactNativeHeading.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeHeading.xcodeproj; path = "../node_modules/react-native-heading/ReactNativeHeading.xcodeproj"; sourceTree = "<group>"; };
@@ -414,6 +424,7 @@
 				7FB90A45C51443D3B628364F /* libReactNativeStorePhotosAlbum.a in Frameworks */,
 				A38A25F5A55C4241A5401B90 /* libRNPhotosFramework.a in Frameworks */,
 				20CC4978FE2F4099A69F57F3 /* libTextToSpeech.a in Frameworks */,
+				3BCBEAEFFCAC45E0B9BCC8EF /* libVoice.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +591,7 @@
 				81EA8302F7FA478F9E31D9C1 /* libReactNativeStorePhotosAlbum.a */,
 				8DD6F00CEB4F48C6AABD7F9D /* libRNPhotosFramework.a */,
 				F63E4B4FDD344251B1FAF18C /* libTextToSpeech.a */,
+				0DEFB589698146F7B2922901 /* libVoice.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -589,6 +601,14 @@
 			children = (
 				644D8FBF204D52C0005EE92F /* libRNPhotosFramework.a */,
 				644D8FC1204D52C0005EE92F /* RNPhotosFrameworkTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		64D42CED208799EC00FF7570 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				64D42CF1208799EC00FF7570 /* libVoice.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -662,6 +682,7 @@
 				B872FC6B6D154ABAB712A1FC /* ReactNativeStorePhotosAlbum.xcodeproj */,
 				C2D837C55E4C4ABB82634F93 /* RNPhotosFramework.xcodeproj */,
 				2919B7F841C64C3F95C6C903 /* TextToSpeech.xcodeproj */,
+				3F689A00A93F4A9DB9457FA0 /* Voice.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -899,6 +920,10 @@
 					ProductGroup = 640C29B12077D6E4003CB9EC /* Products */;
 					ProjectRef = 2919B7F841C64C3F95C6C903 /* TextToSpeech.xcodeproj */;
 				},
+				{
+					ProductGroup = 64D42CED208799EC00FF7570 /* Products */;
+					ProjectRef = 3F689A00A93F4A9DB9457FA0 /* Voice.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1121,6 +1146,13 @@
 			remoteRef = 6463576A1F8BE9EC00D4E265 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		64D42CF1208799EC00FF7570 /* libVoice.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libVoice.a;
+			remoteRef = 64D42CF0208799EC00FF7570 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		64EF5D201F8BE67E009EC3C1 /* libRCTBlob-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1337,12 +1369,14 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = assistiveMapsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1372,12 +1406,14 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = assistiveMapsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1409,6 +1445,7 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = assistiveMaps/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1436,6 +1473,7 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = assistiveMaps/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1469,11 +1507,13 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = "assistiveMaps-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1513,11 +1553,13 @@
 					"$(SRCROOT)/../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum",
 					"$(SRCROOT)/../node_modules/react-native-photos-framework/ios/RNPhotosFramework/**",
 					"$(SRCROOT)/../node_modules/react-native-tts/ios/TextToSpeech",
+					"$(SRCROOT)/../node_modules/react-native-voice/ios/Voice",
 				);
 				INFOPLIST_FILE = "assistiveMaps-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1558,6 +1600,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.assistiveMaps-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1582,6 +1625,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

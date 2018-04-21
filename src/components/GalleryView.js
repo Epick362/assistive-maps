@@ -17,7 +17,7 @@ import Tts from 'react-native-tts';
 
 import Storage, {PHOTOS_LIBRARY_KEY} from '../models/Storage';
 import Gallery from '../models/Gallery';
-import NearbyPlaces from "../models/NearbyPlaces";
+import Maps from "../models/Maps";
 
 const { width, height } = Dimensions.get('window');
 
@@ -147,6 +147,7 @@ class GalleryView extends Component {
                     renderItem={this._renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
+                    onSnapToItem={(index) => Tts.stop() }
                 />
 
                 <Text style={styles.closeGallery}>Potiahni dole pre zatvorenie Galérie</Text>
