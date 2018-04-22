@@ -1,6 +1,7 @@
 package com.assistivemaps;
 
 import com.facebook.react.ReactActivity;
+import org.reactnative.camera.RNCameraPackage;
 import com.wenkesj.voice.VoicePackage;
 import com.joshblour.reactnativeheading.ReactNativeHeadingPackage;
 
