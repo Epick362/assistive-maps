@@ -1,4 +1,4 @@
-package com.assistivemaps;
+package com.assistivecamera;
 
 import com.facebook.react.ReactActivity;
 import org.reactnative.camera.RNCameraPackage;
@@ -13,6 +13,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "assistiveMaps";
+        return "assistiveCamera";
     }
 }

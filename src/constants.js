@@ -1,4 +1,4 @@
-export const ALBUM_NAME = 'Assistive Maps';
+export const ALBUM_NAME = 'Assistive Camera';
 
 export const DIRECTION_UP = 'up';
 export const DIRECTION_DOWN = 'down';

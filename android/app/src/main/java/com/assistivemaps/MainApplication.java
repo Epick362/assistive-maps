@@ -1,4 +1,4 @@
-package com.assistivemaps;
+package com.assistivecamera;
 
 import android.app.Application;
 
