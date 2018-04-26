@@ -1,6 +1,7 @@
 package com.assistivecamera;
 
 import com.facebook.react.ReactActivity;
+import com.zmxv.RNSound.RNSoundPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.wenkesj.voice.VoicePackage;
 import com.joshblour.reactnativeheading.ReactNativeHeadingPackage;

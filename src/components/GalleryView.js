@@ -8,12 +8,14 @@ import {
     Alert,
     Button,
     ScrollView,
+    TouchableHighlight,
     TouchableOpacity,
     Dimensions
 } from "react-native";
 import RNPhotosFramework from 'react-native-photos-framework';
 import Carousel from 'react-native-snap-carousel';
 import Tts from 'react-native-tts';
+import Icon from 'react-native-fa-icons';
 
 import Storage, {PHOTOS_LIBRARY_KEY} from '../models/Storage';
 import Gallery from '../models/Gallery';
@@ -46,8 +48,12 @@ class GalleryView extends Component {
         let ttsContent = 'Fotka ';
 
         if (photo.metaData) {
+            if (photo.metaData.name) {
+                ttsContent += photo.metaData.name + ', ';
+            }
+
             if (photo.metaData.street && photo.metaData.street.formatted_address) {
-                ttsContent += 'odfotena na ulici '+ photo.metaData.street.formatted_address + '. ';
+                ttsContent += 'odfotená na adrese '+ photo.metaData.street.formatted_address + '. ';
             }
 
             if (photo.metaData.nearby.length > 0) {
@@ -59,8 +65,8 @@ class GalleryView extends Component {
 
             if (photo.metaData.timestamp) {
                 let date = new Date(photo.metaData.timestamp);
-                let humanDate = date.toLocaleString('cs-CZ');
-                ttsContent += 'Fotka bola vytvorená dňa '+ humanDate;
+                let humanDate = date.toLocaleString('sk-SK');
+                ttsContent += 'Vytvorená dňa '+ humanDate;
             }
         }
 
@@ -92,8 +98,8 @@ class GalleryView extends Component {
 
     _renderItem = ({item, index}) => {
         return (
-            <TouchableOpacity onPress={() => this.tapPhoto(item)}>
             <View style={styles.slideInnerContainer}>
+            <TouchableOpacity onPress={() => this.tapPhoto(item)}>
                 <View style={styles.imageContainer}>
                     <Image
                         style={styles.image}
@@ -104,7 +110,14 @@ class GalleryView extends Component {
                     item.metaData &&
                     <View style={styles.metadataContainer}>
                         <Text style={styles.propertyTitle}>
-                            Nazov ulice
+                            Názov fotky
+                        </Text>
+                        <Text style={styles.propertyValue}>
+                            {item.metaData.name}
+                        </Text>
+                
+                        <Text style={styles.propertyTitle}>
+                            Adresa
                         </Text>
                         <Text style={styles.propertyValue}>
                             {item.metaData.street.formatted_address}
@@ -124,23 +137,29 @@ class GalleryView extends Component {
                         </View>
 
                         <Text style={styles.propertyTitle}>
-                            GPS lokácia
+                            GPS súradnice
                         </Text>
                         <View style={styles.propertyValue}>
                             <Text>Latitude: {item.metaData.location.latitude}</Text>
                             <Text>Longitude: {item.metaData.location.longitude}</Text>
-                            <Text>Smer: {item.metaData.heading}˚</Text>
+                            <Text>Azimut: {item.metaData.heading}˚</Text>
                         </View>
                     </View>
                 }
+                </TouchableOpacity>
             </View>
-            </TouchableOpacity>
         );
     }
 
     render() {
         return (
             <View style={styles.modalContainer}>
+                <Text style={styles.galleryTitle}><Icon name='photo' /> Galéria</Text>
+                <TouchableHighlight onPress={this.props.closeModal} style={styles.closeGalleryButton}>
+                    <Text style={styles.closeGalleryButtonText}>
+                        Zatvoriť galériu  <Icon name='times' />
+                    </Text>
+                </TouchableHighlight>
                 <Carousel
                     ref={(c) => { this._carousel = c; }}
                     data={this.state.photos}
@@ -159,7 +178,7 @@ class GalleryView extends Component {
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        paddingTop: 50
+        paddingTop: 80
     },
     slideInnerContainer: {
         width: itemWidth,
@@ -182,11 +201,29 @@ const styles = StyleSheet.create({
     propertyValue: {
 
     },
+    galleryTitle: {
+        position: 'absolute',
+        left: 20,
+        top: 40,
+        fontSize: 28,
+        fontWeight: 'bold'
+    },
     closeGallery: {
         position: 'absolute',
         bottom: 20,
         alignSelf: 'center',
         fontSize: 16
+    },
+    closeGalleryButton: {
+        position: 'absolute',
+        top: 40,
+        right: 10,
+        backgroundColor: '#FF4400',
+        borderRadius: 14,
+        padding: 10
+    },
+    closeGalleryButtonText: {
+        color: '#FFF'
     }
 })
 

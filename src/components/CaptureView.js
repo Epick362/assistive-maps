@@ -12,7 +12,8 @@ import {
     Dimensions,
     DeviceEventEmitter,
     Modal,
-    PanResponder
+    PanResponder,
+    Vibration
 } from "react-native";
 
 import { RNCamera } from "react-native-camera";
@@ -20,6 +21,7 @@ import ReactNativeHeading from "react-native-heading";
 import _ from "lodash";
 import Tts from 'react-native-tts';
 import Voice from 'react-native-voice';
+import Icon from 'react-native-fa-icons';
 
 import NearbyView from './NearbyView';
 import GalleryView from './GalleryView';
@@ -27,6 +29,7 @@ import GalleryView from './GalleryView';
 import Location from '../models/Location';
 import Photo from '../models/Photo';
 import Maps from '../models/Maps';
+import VoiceRecognition from '../models/VoiceRecognition';
 
 import {
     DIRECTION_DOWN,
@@ -50,43 +53,7 @@ class CaptureView extends Component {
             error: null,
             nearby: []
         };
-
-
-        Voice.onSpeechStart = this.onSpeechStartHandler.bind(this);
-        Voice.onSpeechEnd = this.onSpeechEndHandler.bind(this);
-        Voice.onSpeechPartialResults = this.onSpeechPartialResultsHandler.bind(this);
-        Voice.onSpeechResults = this.onSpeechResultsHandler.bind(this);
-        Voice.onSpeechError = this.onSpeechErrorHandler.bind(this);
-        // Note: consider using Voice.removeAllListeners() if this component unmounts during speech recognition
       }
-    
-      onSpeechStartHandler() {
-        console.log("Speech started");
-        // Update state to notify user that speech recognition has started
-      }
-    
-       onSpeechPartialResultsHandler(e) {
-        // e = { value: string[] }
-        // Loop through e.value for speech transcription results
-        console.log("Partial results", e);
-      }
-    
-      onSpeechResultsHandler(e) {
-        // e = { value: string[] }
-        // Loop through e.value for speech transcription results
-        console.log("Speech results", e);
-      }
-    
-      onSpeechEndHandler(e) {
-        // e = { error?: boolean }
-        console.log("Speech ended", e);
-      }
-    
-      onSpeechErrorHandler(e) {
-        // e = { code?: string, message?: string }
-        console.log("Speech error", e);
-      }
-    
 
     componentDidMount() {
         ReactNativeHeading.start(5).then(didStart => {
@@ -133,6 +100,10 @@ class CaptureView extends Component {
             <RNCamera ref={cam => {
                 this.camera = cam;
             }} style={styles.preview}>
+                <View style={styles.helpTop}>
+                    <Text style={styles.helpTopText}>Potiahni hore pre otvorenie Galérie</Text>
+                    <Text style={styles.helpTopText}>Dotkni sa kamkoľvek pre odfotenie</Text>
+                </View>
                 <TouchableHighlight style={styles.touchableCapture} onPress={this.takePicture.bind(this)}>
                     <View />
                 </TouchableHighlight>
@@ -141,11 +112,17 @@ class CaptureView extends Component {
                     transparent={false}
                     visible={this.state.galleryVisible}
                 >
-                    <GalleryView></GalleryView>
+                    <GalleryView closeModal={this.closeModal}></GalleryView>
                 </Modal>
-                <View style={styles.helpBottom}>
-                    <Text style={styles.helpBottomText}>Potiahni hore pre otvorenie Galérie</Text>
-                    <Text style={styles.helpBottomText}>Dotkni sa kamkoľvek pre odfotenie</Text>
+                <View style={styles.bottomActions}>
+                    <TouchableHighlight style={styles.actionGallery} onPress={this.openModal.bind(this)}>
+                        <Text style={styles.actionText}>
+                            <Icon name='photo' /> Galéria
+                        </Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={styles.actionCapture} onPress={this.takePicture.bind(this)}>
+                        <Icon name='camera' style={{fontSize: 18, color: '#FFF'}} />
+                    </TouchableHighlight>
                 </View>
             </RNCamera>
         </View>;
@@ -181,10 +158,12 @@ class CaptureView extends Component {
     }
     
     openModal = () => {
+        Tts.speak('Galeria otvorena');
         this.setState({ galleryVisible: true });
     }
 
     closeModal = () => {
+        Tts.speak('Galeria zatvorena');
         this.setState({ galleryVisible: false });
     }
 
@@ -201,30 +180,34 @@ class CaptureView extends Component {
             timestamp: new Date()
         }
 
-        // Tts.speak('Cvak!');
-        // if (photo.metaData.nearby.length > 0) {
-        //     ttsContent += 'Blízke miesta: ';
-        //     let nearbyNames = photo.metaData.nearby.map((near) => near.name);
-        //     ttsContent += nearbyNames.join(',');
-        //     ttsContent += '.';
-        // }
-        // + NAHRAT meno fotky cez voice recognition
-
         this.camera.takePictureAsync()
         .then(data => {
             photoData = data;
 
-            Voice.start('cs-CZ');
-            console.log('voice started');
-
-            return this.loadAddress(metaData.location);
+            return Promise.all([this.loadAddress(metaData.location), this.recordPhotoName()]);
         })
-        .then(streetData => {
+        .then(values => {
+            let streetData = values[0];
+            let fileName = values[1];
+
             metaData.street = streetData;
+            metaData.name = fileName;
 
             return photo.save(photoData, metaData);
         })
         .catch(err => console.error(err));
+    }
+
+    recordPhotoName = () => {
+        let voiceRec = new VoiceRecognition();
+
+        return Tts.speak('Cvak!')
+        .then(() => voiceRec.recordPhotoName())
+        .then((recognizedText) => {
+            Tts.speak('Fotka uložená pod menom: ' + recognizedText);
+
+            return recognizedText;
+        });
     }
 
     processNearbyData = (position, nearby = []) => {
@@ -264,10 +247,10 @@ class CaptureView extends Component {
     }
 
     getDirection = ({ moveX, moveY, dx, dy }) => {
-        const draggedDown = dy > 60;
-        const draggedUp = dy < -60;
-        const draggedLeft = dx < -60;
-        const draggedRight = dx > 60;
+        const draggedDown = dy > 40;
+        const draggedUp = dy < -40;
+        const draggedLeft = dx < -40;
+        const draggedRight = dx > 40;
     
         if (draggedDown) {
             return DIRECTION_DOWN;
@@ -290,13 +273,14 @@ class CaptureView extends Component {
 
     dragResponder = (direction) => {
         if (direction === DIRECTION_UP) {
-            Tts.speak('Galeria otvorena');
             this.openModal();
         }
 
         if (direction === DIRECTION_DOWN) {
-            Tts.speak('Galeria zatvorena');
-            this.closeModal();
+            if (this.state.galleryVisible === true) {
+                this.closeModal();
+                return;
+            }
         }
     }
 }
@@ -316,8 +300,28 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width
     },
     'bottomActions': {
+        position: 'absolute',
+        width: '90%',
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        bottom: 30,
+    },
+    'actionGallery': {
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: '#FFF',
+        borderRadius: 20,
+        paddingVertical: 5,
+        paddingHorizontal: 15
+    },
+    'actionCapture': {
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        width: 60,
+        height: 60,
+        backgroundColor: '#FF4000',
+        borderRadius: 60
     },
     'nearby': {
     //    flexGrow: 1
@@ -362,15 +366,15 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0
     },
-    helpBottom: {
+    helpTop: {
         position: 'absolute',
         alignSelf: 'center',
-        bottom: 30,
+        top: 40,
         backgroundColor: '#FFF',
         borderRadius: 10,
         padding: 10
     },
-    helpBottomText: {
+    helpTopText: {
         color: '#202020',
         fontSize: 16,
         textAlign: 'center',
