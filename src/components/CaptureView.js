@@ -53,6 +53,8 @@ class CaptureView extends Component {
             error: null,
             nearby: []
         };
+
+        this.galleryRef = React.createRef();
       }
 
     componentDidMount() {
@@ -112,7 +114,7 @@ class CaptureView extends Component {
                     transparent={false}
                     visible={this.state.galleryVisible}
                 >
-                    <GalleryView closeModal={this.closeModal}></GalleryView>
+                    <GalleryView ref={this.galleryRef} closeModal={this.closeModal}></GalleryView>
                 </Modal>
                 <View style={styles.bottomActions}>
                     <TouchableHighlight style={styles.actionGallery} onPress={this.openModal.bind(this)}>
@@ -157,13 +159,27 @@ class CaptureView extends Component {
         });
     }
     
-    openModal = () => {
-        Tts.speak('Galeria otvorena');
+    openModal = (speak = true) => {
+        if (this.state.galleryVisible) {
+            return;
+        }
+
+        if (speak) {
+            Tts.speak('Galeria otvorena');
+        }
+
         this.setState({ galleryVisible: true });
     }
 
-    closeModal = () => {
-        Tts.speak('Galeria zatvorena');
+    closeModal = (speak = true) => {
+        if (!this.state.galleryVisible) {
+            return;
+        }
+
+        if (speak) {
+            Tts.speak('Galeria zatvorena');
+        }
+
         this.setState({ galleryVisible: false });
     }
 
@@ -180,11 +196,13 @@ class CaptureView extends Component {
             timestamp: new Date()
         }
 
+        Tts.stop();
+
         this.camera.takePictureAsync()
         .then(data => {
             photoData = data;
 
-            return Promise.all([this.loadAddress(metaData.location), this.recordPhotoName()]);
+            return Promise.all([this.loadAddress(metaData.location), this.recordCapturedName()]);
         })
         .then(values => {
             let streetData = values[0];
@@ -198,11 +216,10 @@ class CaptureView extends Component {
         .catch(err => console.error(err));
     }
 
-    recordPhotoName = () => {
+    recordCapturedName = () => {
         let voiceRec = new VoiceRecognition();
 
-        return Tts.speak('Cvak!')
-        .then(() => voiceRec.recordPhotoName())
+        return voiceRec.recordPhotoName('Cvak! Po zaznení tónu, vyslovte názov fotky')
         .then((recognizedText) => {
             Tts.speak('Fotka uložená pod menom: ' + recognizedText);
 
@@ -247,8 +264,8 @@ class CaptureView extends Component {
     }
 
     getDirection = ({ moveX, moveY, dx, dy }) => {
-        const draggedDown = dy > 40;
-        const draggedUp = dy < -40;
+        const draggedDown = dy > 50;
+        const draggedUp = dy < -50;
         const draggedLeft = dx < -40;
         const draggedRight = dx > 40;
     
@@ -277,10 +294,13 @@ class CaptureView extends Component {
         }
 
         if (direction === DIRECTION_DOWN) {
-            if (this.state.galleryVisible === true) {
+            if (this.state.galleryVisible) {
                 this.closeModal();
                 return;
             }
+
+            this.openModal(false);
+            this.galleryRef.current.searchGallery();
         }
     }
 }
@@ -296,8 +316,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
-        height: Dimensions.get('window').height,
-        width: Dimensions.get('window').width
+        height: '100%',
+        width: '100%'
     },
     'bottomActions': {
         position: 'absolute',
@@ -324,7 +344,6 @@ const styles = StyleSheet.create({
         borderRadius: 60
     },
     'nearby': {
-    //    flexGrow: 1
         height: '60%',
         marginBottom: 100,
         marginTop: 30,
@@ -340,15 +359,6 @@ const styles = StyleSheet.create({
     'gpsPosition__text': {
         color: "#000", 
         textAlign: 'center'
-    },
-    'capture': {
-        width: 70,
-        height: 70,
-        borderRadius: 35,
-        borderWidth: 5,
-        borderColor: '#FFF',
-        marginBottom: 15,
-        marginTop: 20
     },
     'gallery': {
         width: 70,

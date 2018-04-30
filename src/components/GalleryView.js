@@ -16,10 +16,13 @@ import RNPhotosFramework from 'react-native-photos-framework';
 import Carousel from 'react-native-snap-carousel';
 import Tts from 'react-native-tts';
 import Icon from 'react-native-fa-icons';
+import Fuse from 'fuse.js';
+import ImagePreview from 'react-native-image-preview';
 
 import Storage, {PHOTOS_LIBRARY_KEY} from '../models/Storage';
 import Gallery from '../models/Gallery';
 import Maps from "../models/Maps";
+import VoiceRecognition from '../models/VoiceRecognition';
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,6 +48,7 @@ class GalleryView extends Component {
     }
 
     tapPhoto = (photo) => {
+        Tts.stop();
         let ttsContent = 'Fotka ';
 
         if (photo.metaData) {
@@ -59,14 +63,14 @@ class GalleryView extends Component {
             if (photo.metaData.nearby.length > 0) {
                 ttsContent += 'Blízke miesta: ';
                 let nearbyNames = photo.metaData.nearby.map((near) => near.name);
-                ttsContent += nearbyNames.join(',');
+                ttsContent += nearbyNames.join(', ');
                 ttsContent += '.';
             }
 
             if (photo.metaData.timestamp) {
                 let date = new Date(photo.metaData.timestamp);
                 let humanDate = date.toLocaleString('sk-SK');
-                ttsContent += 'Vytvorená dňa '+ humanDate;
+                ttsContent += 'Odfotené dňa '+ humanDate + '.';
             }
         }
 
@@ -99,7 +103,10 @@ class GalleryView extends Component {
     _renderItem = ({item, index}) => {
         return (
             <View style={styles.slideInnerContainer}>
-            <TouchableOpacity onPress={() => this.tapPhoto(item)}>
+            <TouchableOpacity 
+                onPress={() => this.tapPhoto(item)}
+                onLongPress={() => this.openPreview(item)}
+            >
                 <View style={styles.imageContainer}>
                     <Image
                         style={styles.image}
@@ -135,15 +142,6 @@ class GalleryView extends Component {
                                 })
                             }
                         </View>
-
-                        <Text style={styles.propertyTitle}>
-                            GPS súradnice
-                        </Text>
-                        <View style={styles.propertyValue}>
-                            <Text>Latitude: {item.metaData.location.latitude}</Text>
-                            <Text>Longitude: {item.metaData.location.longitude}</Text>
-                            <Text>Azimut: {item.metaData.heading}˚</Text>
-                        </View>
                     </View>
                 }
                 </TouchableOpacity>
@@ -151,34 +149,140 @@ class GalleryView extends Component {
         );
     }
 
+    renderBottomButton() {
+        if (!this.state.query) {
+            return (
+                <TouchableHighlight 
+                    accessible={true}
+                    accessibilityLabel={'Vyhľadať fotku'}
+                    onPress={this.searchGallery} style={styles.searchButton}>
+                    <Text style={styles.defaultButtonText}>
+                        <Icon name='search' /> Vyhľadávanie
+                    </Text>
+                </TouchableHighlight>
+            );
+        } else {
+            return (
+                <TouchableHighlight 
+                    onPress={this.clearSearch} style={styles.clearSearchButton}>
+                    <Text style={styles.defaultButtonText}>
+                        <Icon name='times' /> Ukončiť vyhľadávanie "{this.state.query}"
+                    </Text>
+                </TouchableHighlight>
+            );
+        }
+    }
+
     render() {
         return (
             <View style={styles.modalContainer}>
                 <Text style={styles.galleryTitle}><Icon name='photo' /> Galéria</Text>
-                <TouchableHighlight onPress={this.props.closeModal} style={styles.closeGalleryButton}>
-                    <Text style={styles.closeGalleryButtonText}>
-                        Zatvoriť galériu  <Icon name='times' />
-                    </Text>
-                </TouchableHighlight>
+                <View style={styles.galleryButtons}>
+                    <TouchableHighlight 
+                        accessible={true}
+                        accessibilityLabel={'Zatvoriť galériu'}
+                        onPress={this.props.closeModal} style={styles.closeGalleryButton}>
+                        <Text style={styles.defaultButtonText}>
+                            <Icon name='chevron-down' />
+                        </Text>
+                    </TouchableHighlight>
+                </View>
+
                 <Carousel
                     ref={(c) => { this._carousel = c; }}
-                    data={this.state.photos}
+                    data={this.state.query ? this.state.searchResults : this.state.photos}
                     renderItem={this._renderItem}
                     sliderWidth={sliderWidth}
                     itemWidth={itemWidth}
-                    onSnapToItem={(index) => Tts.stop() }
+                    // onSnapToItem={}
                 />
 
-                <Text style={styles.closeGallery}>Potiahni dole pre zatvorenie Galérie</Text>
+                <View style={styles.bottomActions}>
+                    { this.renderBottomButton() }
+                </View>
             </View>
         )
     }
+
+    openPreview = (photo) => {
+        this.setState({
+            previewVisible: true,
+            preview: photo
+        });
+    }
+
+    closePreview = () => {
+        this.setState({
+            previewVisible: false,
+            preview: null
+        })
+    }
+
+    searchGallery = () => {
+        this.recordLookupPhotoName()
+        .then(query => {
+            var options = {
+                shouldSort: true,
+                threshold: 0.6,
+                location: 0,
+                distance: 100,
+                maxPatternLength: 32,
+                minMatchCharLength: 1,
+                keys: [
+                  "metaData.name",
+                  "metaData.street.formatted_address",
+                  "metaData.nearby.name"
+              ]
+            };
+
+            var fuse = new Fuse(this.state.photos, options);
+            var result = fuse.search(query);
+
+            if (!result) {
+                Tts.speak('Nenašiel som žiadne fotky pre výraz: ' + query);
+                return;
+            }
+
+            this._carousel.snapToItem(0, false, false);
+            this.setState({
+                query: query,
+                searchResults: result
+            });
+
+            Tts.speak('Našiel som ' + result.length + ' fotiek pre výraz: ' + query);
+
+            let resultNames = result.map((item) => item.metaData.name);
+            Tts.speak(resultNames.join(', '));
+        });
+    }
+
+    clearSearch = () => {
+        this.setState({
+            query: ''
+        });
+    }
+
+    recordLookupPhotoName = () => {
+        let voiceRec = new VoiceRecognition();
+
+        return voiceRec.recordPhotoName('Vyhľadávanie. Po zaznení tónu, vyslovte hľadaný výraz', 5500);
+    }
 }
+
+const bottomButton = {
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    alignSelf: 'center',
+    borderRadius: 14,
+    padding: 20,
+    width: '90%',
+    marginHorizontal: 5
+};
 
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        paddingTop: 80
+        paddingTop: 90
     },
     slideInnerContainer: {
         width: itemWidth,
@@ -208,21 +312,36 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold'
     },
-    closeGallery: {
+    bottomActions: {
         position: 'absolute',
         bottom: 20,
-        alignSelf: 'center',
-        fontSize: 16
+        width: '100%',
+        alignSelf: 'center'
     },
-    closeGalleryButton: {
+    galleryButtons: {
         position: 'absolute',
         top: 40,
         right: 10,
-        backgroundColor: '#FF4400',
-        borderRadius: 14,
-        padding: 10
+        flex: 1,
+        flexDirection: 'row'
     },
-    closeGalleryButtonText: {
+    searchButton: {
+        ...bottomButton,
+        backgroundColor: '#5158bb',
+    },
+    clearSearchButton: {
+        ...bottomButton,
+        backgroundColor: '#FF4400'
+    },
+    closeGalleryButton: {
+        backgroundColor: '#FF4400',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        width: 45,
+        height: 45,
+        borderRadius: 45
+    },
+    defaultButtonText: {
         color: '#FFF'
     }
 })

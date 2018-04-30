@@ -28,6 +28,7 @@ export default class App extends Component {
     componentWillMount() {
         // Tutorial
         RNShakeEvent.addEventListener('shake', () => {
+            Tts.stop();
             Tts.speak('Vitajte v aplikácií Asistívna kamera. Pre odfotenie, kliknite kamkoľvek na obrazovku. Pre otvorenie galérie potiahnite prstom zdola hore, medzi fotkami sa presúvate potiahnutím zprava doľava. Túto nápovedu vyvoláte zahrkaním telefónu');
         });
     }

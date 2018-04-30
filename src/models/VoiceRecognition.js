@@ -41,12 +41,12 @@ class VoiceRecognition {
        Tts.speak('Pri rozpoznávaní hlasu došlo k chybe.')
     }
 
-    recordPhotoName() {
-        Tts.speak('Po zaznení tónu, zadajte názov fotky');
+    recordPhotoName(text, timeout = 4500) {
+        Tts.speak(text);
         setTimeout(() => {
             startSound.play();
             Voice.start('sk-SK');
-        }, 4500);
+        }, timeout);
 
         return this.resultPromise;
     }
