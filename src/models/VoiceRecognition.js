@@ -2,8 +2,8 @@ import Voice from 'react-native-voice';
 import Tts from 'react-native-tts';
 import Sound from 'react-native-sound';
 
-let completeSound = new Sound('recognitionComplete.m4a', Sound.MAIN_BUNDLE);
-let startSound = new Sound('startRecognition.m4a', Sound.MAIN_BUNDLE);
+let completeSound = new Sound('recognition_complete.m4a', Sound.MAIN_BUNDLE);
+let startSound = new Sound('start_recognition.m4a', Sound.MAIN_BUNDLE);
 
 class VoiceRecognition {
     constructor() {

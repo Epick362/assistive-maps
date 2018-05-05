@@ -1,4 +1,5 @@
 import RNPhotosFramework from 'react-native-photos-framework';
+import { Platform } from 'react-native';
 
 import Gallery from './Gallery';
 import Storage from '../models/Storage';
@@ -14,21 +15,29 @@ class Photo {
         this.uri = data.uri;
 
         console.log('Photo data:', data);
-
-        return RNPhotosFramework.getAlbumsByTitle(ALBUM_NAME)
-        .then((result) => {
-            if (result.albums.length <= 0) {
-                return RNPhotosFramework.createAlbum(ALBUM_NAME)
-                .then((album) => {
-                    return Gallery.saveToAlbum({uri: data.uri}, album);
-                })
-            } else {
-                return Gallery.saveToAlbum({uri: data.uri}, result.albums[0]);
-            }
-        })
-        .then((photo) => {
-            return Storage.appendMetadataToStorage(photo, meta);
-        })
+        
+        if (Platform.OS === 'ios') {
+            return RNPhotosFramework.getAlbumsByTitle(ALBUM_NAME)
+            .then((result) => {
+                if (result.albums.length <= 0) {
+                    return RNPhotosFramework.createAlbum(ALBUM_NAME)
+                    .then((album) => {
+                        return Gallery.saveToAlbum({uri: data.uri}, album);
+                    })
+                } else {
+                    return Gallery.saveToAlbum({uri: data.uri}, result.albums[0]);
+                }
+            })
+            .then((photo) => {
+                return Storage.appendMetadataToStorage(photo, meta);
+            })
+        } else {
+            return Gallery.save({uri: data.uri})
+            .then((photo) => {
+                console.warn(photo);
+                return Storage.appendMetadataToStorage(photo, meta);
+            });
+        }
     }
 }
 

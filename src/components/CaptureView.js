@@ -6,9 +6,9 @@ import {
     View,
     CameraRoll,
     Alert,
-    Button,
     ScrollView,
     TouchableHighlight,
+    TouchableWithoutFeedback,
     Dimensions,
     DeviceEventEmitter,
     Modal,
@@ -25,6 +25,7 @@ import Icon from 'react-native-fa-icons';
 
 import NearbyView from './NearbyView';
 import GalleryView from './GalleryView';
+import Button from './Button';
 
 import Location from '../models/Location';
 import Photo from '../models/Photo';
@@ -58,6 +59,9 @@ class CaptureView extends Component {
       }
 
     componentDidMount() {
+        Voice.isAvailable()
+        .then(console.warn);
+
         ReactNativeHeading.start(5).then(didStart => {
             if (!didStart) {
                 console.error('ReactNativeHeading is not supported.')
@@ -99,34 +103,37 @@ class CaptureView extends Component {
 
     render() {
         return <View style={styles.container} {...this._panResponder.panHandlers}>
-            <RNCamera ref={cam => {
-                this.camera = cam;
-            }} style={styles.preview}>
-                <View style={styles.helpTop}>
-                    <Text style={styles.helpTopText}>Potiahni hore pre otvorenie Galérie</Text>
-                    <Text style={styles.helpTopText}>Dotkni sa kamkoľvek pre odfotenie</Text>
-                </View>
-                <TouchableHighlight style={styles.touchableCapture} onPress={this.takePicture.bind(this)}>
+            <RNCamera 
+                ref={cam => {
+                    this.camera = cam;
+                }} 
+                style={styles.preview}
+                permissionDialogTitle={'Permission to use camera'}
+                permissionDialogMessage={'We need your permission to use your camera phone'}
+            >
+                <TouchableWithoutFeedback style={styles.touchableCapture} onPress={this.takePicture}>
                     <View />
-                </TouchableHighlight>
-                <Modal
-                    animationType={"slide"}
-                    transparent={false}
-                    visible={this.state.galleryVisible}
-                >
-                    <GalleryView ref={this.galleryRef} closeModal={this.closeModal}></GalleryView>
-                </Modal>
+                </TouchableWithoutFeedback>
                 <View style={styles.bottomActions}>
-                    <TouchableHighlight style={styles.actionGallery} onPress={this.openModal.bind(this)}>
-                        <Text style={styles.actionText}>
-                            <Icon name='photo' /> Galéria
-                        </Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.actionCapture} onPress={this.takePicture.bind(this)}>
-                        <Icon name='camera' style={{fontSize: 18, color: '#FFF'}} />
-                    </TouchableHighlight>
+                    <Button 
+                        style={styles.actionGallery} 
+                        onPress={this.openModal}
+                        icon={'photo'}
+                        label={'Galéria'}
+                        raised={true}
+                    ></Button>
+                    <Button style={styles.actionCapture} onPress={this.takePicture} icon={'camera'} raised={true}></Button>
                 </View>
             </RNCamera>
+
+            <Modal
+                animationType={"slide"}
+                transparent={false}
+                visible={this.state.galleryVisible}
+                onRequestClose={this.closeModal}
+            >
+                <GalleryView ref={this.galleryRef} closeModal={this.closeModal}></GalleryView>
+            </Modal>
         </View>;
     }
 
@@ -146,7 +153,7 @@ class CaptureView extends Component {
     }
 
     errorLocation = (positionError) => {
-        this.setState({ error: error.message });
+        this.setState({ error: positionError.message });
     }
 
     updateHeading = (data) => {
@@ -328,20 +335,11 @@ const styles = StyleSheet.create({
         bottom: 30,
     },
     'actionGallery': {
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        backgroundColor: '#FFF',
-        borderRadius: 20,
-        paddingVertical: 5,
-        paddingHorizontal: 15
+        
     },
     'actionCapture': {
-        justifyContent: 'center', 
-        alignItems: 'center', 
         width: 60,
         height: 60,
-        backgroundColor: '#FF4000',
-        borderRadius: 60
     },
     'nearby': {
         height: '60%',

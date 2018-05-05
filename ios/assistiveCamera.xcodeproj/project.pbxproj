@@ -36,10 +36,11 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* assistiveMapsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* assistiveMapsTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		2E2C26D93B204ED7BD301E85 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B69C962828146B9A8B4752F /* FontAwesome.ttf */; };
 		3BCBEAEFFCAC45E0B9BCC8EF /* libVoice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DEFB589698146F7B2922901 /* libVoice.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		645B36522091FD2900BD16DC /* startRecognition.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 645B364F2091FD2900BD16DC /* startRecognition.m4a */; };
-		645B36532091FD2900BD16DC /* recognitionComplete.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 645B36512091FD2900BD16DC /* recognitionComplete.m4a */; };
+		645B36522091FD2900BD16DC /* start_recognition.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 645B364F2091FD2900BD16DC /* start_recognition.m4a */; };
+		645B36532091FD2900BD16DC /* recognition_complete.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 645B36512091FD2900BD16DC /* recognition_complete.m4a */; };
 		64FD438E204ABDEA00668FA2 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FD438C204ABDDD00668FA2 /* libRCTCameraRoll.a */; };
 		7FB90A45C51443D3B628364F /* libReactNativeStorePhotosAlbum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EA8302F7FA478F9E31D9C1 /* libReactNativeStorePhotosAlbum.a */; };
 		8315BA5D62424335BF51747B /* libReactNativeHeading.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D125175C75457180406ECD /* libReactNativeHeading.a */; };
@@ -47,7 +48,6 @@
 		A38A25F5A55C4241A5401B90 /* libRNPhotosFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DD6F00CEB4F48C6AABD7F9D /* libRNPhotosFramework.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		E9CFE2C695F34406B7F8D2AB /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB7DEDF4835410F91CB5B70 /* libRNCamera.a */; };
-		2E2C26D93B204ED7BD301E85 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B69C962828146B9A8B4752F /* FontAwesome.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -427,10 +427,11 @@
 		30D125175C75457180406ECD /* libReactNativeHeading.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeHeading.a; sourceTree = "<group>"; };
 		3F689A00A93F4A9DB9457FA0 /* Voice.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Voice.xcodeproj; path = "../node_modules/react-native-voice/ios/Voice.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
-		645B364F2091FD2900BD16DC /* startRecognition.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = startRecognition.m4a; sourceTree = "<group>"; };
-		645B36512091FD2900BD16DC /* recognitionComplete.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = recognitionComplete.m4a; sourceTree = "<group>"; };
+		645B364F2091FD2900BD16DC /* start_recognition.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = start_recognition.m4a; sourceTree = "<group>"; };
+		645B36512091FD2900BD16DC /* recognition_complete.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = recognition_complete.m4a; sourceTree = "<group>"; };
 		64FD4387204ABDDD00668FA2 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		655DBCACB8CC443580501923 /* ReactNativeHeading.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeHeading.xcodeproj; path = "../node_modules/react-native-heading/ReactNativeHeading.xcodeproj"; sourceTree = "<group>"; };
+		6B69C962828146B9A8B4752F /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-fa-icons/fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		75277236ACF74F6F9F859C6D /* libRNShakeEvent.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNShakeEvent.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AB7DEDF4835410F91CB5B70 /* libRNCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCamera.a; sourceTree = "<group>"; };
@@ -442,7 +443,6 @@
 		C2D837C55E4C4ABB82634F93 /* RNPhotosFramework.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNPhotosFramework.xcodeproj; path = "../node_modules/react-native-photos-framework/ios/RNPhotosFramework.xcodeproj"; sourceTree = "<group>"; };
 		E7A741F786FD44DEA03C46A4 /* libRNSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSound.a; sourceTree = "<group>"; };
 		F63E4B4FDD344251B1FAF18C /* libTextToSpeech.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libTextToSpeech.a; sourceTree = "<group>"; };
-		6B69C962828146B9A8B4752F /* FontAwesome.ttf */ = {isa = PBXFileReference; name = "FontAwesome.ttf"; path = "../node_modules/react-native-fa-icons/fonts/FontAwesome.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -778,8 +778,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				645B36512091FD2900BD16DC /* recognitionComplete.m4a */,
-				645B364F2091FD2900BD16DC /* startRecognition.m4a */,
+				645B36512091FD2900BD16DC /* recognition_complete.m4a */,
+				645B364F2091FD2900BD16DC /* start_recognition.m4a */,
 				13B07FAE1A68108700A75B9A /* assistiveMaps */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* assistiveMapsTests */,
@@ -819,7 +819,6 @@
 				6B69C962828146B9A8B4752F /* FontAwesome.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1379,8 +1378,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				645B36532091FD2900BD16DC /* recognitionComplete.m4a in Resources */,
-				645B36522091FD2900BD16DC /* startRecognition.m4a in Resources */,
+				645B36532091FD2900BD16DC /* recognition_complete.m4a in Resources */,
+				645B36522091FD2900BD16DC /* start_recognition.m4a in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				2E2C26D93B204ED7BD301E85 /* FontAwesome.ttf in Resources */,
 			);

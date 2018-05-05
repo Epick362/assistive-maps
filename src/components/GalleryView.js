@@ -12,14 +12,12 @@ import {
     TouchableOpacity,
     Dimensions
 } from "react-native";
-import RNPhotosFramework from 'react-native-photos-framework';
 import Carousel from 'react-native-snap-carousel';
 import Tts from 'react-native-tts';
 import Icon from 'react-native-fa-icons';
 import Fuse from 'fuse.js';
 import ImagePreview from 'react-native-image-preview';
 
-import Storage, {PHOTOS_LIBRARY_KEY} from '../models/Storage';
 import Gallery from '../models/Gallery';
 import Maps from "../models/Maps";
 import VoiceRecognition from '../models/VoiceRecognition';
@@ -51,24 +49,24 @@ class GalleryView extends Component {
         Tts.stop();
         let ttsContent = 'Fotka ';
 
-        if (photo.metaData) {
-            if (photo.metaData.name) {
-                ttsContent += photo.metaData.name + ', ';
+        if (photo.data) {
+            if (photo.data.name) {
+                ttsContent += photo.data.name + ', ';
             }
 
-            if (photo.metaData.street && photo.metaData.street.formatted_address) {
-                ttsContent += 'odfotená na adrese '+ photo.metaData.street.formatted_address + '. ';
+            if (photo.data.street && photo.data.street.formatted_address) {
+                ttsContent += 'odfotená na adrese '+ photo.data.street.formatted_address + '. ';
             }
 
-            if (photo.metaData.nearby.length > 0) {
+            if (photo.data.nearby.length > 0) {
                 ttsContent += 'Blízke miesta: ';
-                let nearbyNames = photo.metaData.nearby.map((near) => near.name);
+                let nearbyNames = photo.data.nearby.map((near) => near.name);
                 ttsContent += nearbyNames.join(', ');
                 ttsContent += '.';
             }
 
-            if (photo.metaData.timestamp) {
-                let date = new Date(photo.metaData.timestamp);
+            if (photo.data.timestamp) {
+                let date = new Date(photo.data.timestamp);
                 let humanDate = date.toLocaleString('sk-SK');
                 ttsContent += 'Odfotené dňa '+ humanDate + '.';
             }
@@ -78,26 +76,14 @@ class GalleryView extends Component {
     }
 
     componentDidMount() {
-        Gallery.load()
+        let gallery = new Gallery();
+
+        gallery.load()
         .then(photos => {
             this.setState({
-                photos: photos.assets
+                photos: photos
             });
-
-            return photos;
-        })
-        .then(imageAssets => {
-            return Storage.retrieve(PHOTOS_LIBRARY_KEY);
-        })
-        .then(imageMetadata => {
-            this.state.photos.map((photo) => {
-                if (imageMetadata[photo.localIdentifier]) {
-                    photo.metaData = imageMetadata[photo.localIdentifier];
-                }
-
-                return photo;
-            });
-        })
+        });
     }
 
     _renderItem = ({item, index}) => {
@@ -114,20 +100,20 @@ class GalleryView extends Component {
                     />
                 </View>
                 {
-                    item.metaData &&
-                    <View style={styles.metadataContainer}>
+                    item.data &&
+                    <View style={styles.dataContainer}>
                         <Text style={styles.propertyTitle}>
                             Názov fotky
                         </Text>
                         <Text style={styles.propertyValue}>
-                            {item.metaData.name}
+                            {item.data.name}
                         </Text>
                 
                         <Text style={styles.propertyTitle}>
                             Adresa
                         </Text>
                         <Text style={styles.propertyValue}>
-                            {item.metaData.street.formatted_address}
+                            {item.data.street.formatted_address}
                         </Text>
                         
                         <Text style={styles.propertyTitle}>
@@ -135,7 +121,7 @@ class GalleryView extends Component {
                         </Text>
                         <View style={styles.propertyValue}>
                             {
-                                item.metaData.nearby.map((near, i) => {
+                                item.data.nearby.map((near, i) => {
                                     return (
                                         <Text key={i}>{ near.name }</Text>
                                     )
@@ -229,9 +215,9 @@ class GalleryView extends Component {
                 maxPatternLength: 32,
                 minMatchCharLength: 1,
                 keys: [
-                  "metaData.name",
-                  "metaData.street.formatted_address",
-                  "metaData.nearby.name"
+                  "data.name",
+                  "data.street.formatted_address",
+                  "data.nearby.name"
               ]
             };
 
@@ -251,7 +237,7 @@ class GalleryView extends Component {
 
             Tts.speak('Našiel som ' + result.length + ' fotiek pre výraz: ' + query);
 
-            let resultNames = result.map((item) => item.metaData.name);
+            let resultNames = result.map((item) => item.data.name);
             Tts.speak(resultNames.join(', '));
         });
     }

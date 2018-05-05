@@ -2,6 +2,7 @@ package com.assistivecamera;
 
 import android.app.Application;
 
+import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactApplication;
 import net.no_mad.tts.TextToSpeechPackage;
 import com.devialab.camerarollextended.CameraRollExtendedManager;
@@ -11,6 +12,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.wenkesj.voice.VoicePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +32,9 @@ public class MainApplication extends Application implements ReactApplication {
             new TextToSpeechPackage(),
             new CameraRollExtendedManager(),
             new RNCameraPackage(),
-            new ReactNativeHeadingPackage()
+            new RNSoundPackage(),
+            new ReactNativeHeadingPackage(),
+            new VoicePackage()
       );
     }
 
