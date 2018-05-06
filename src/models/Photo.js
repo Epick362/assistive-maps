@@ -34,7 +34,6 @@ class Photo {
         } else {
             return Gallery.save({uri: data.uri})
             .then((photo) => {
-                console.warn(photo);
                 return Storage.appendMetadataToStorage(photo, meta);
             });
         }
