@@ -6,7 +6,6 @@ import {
     View,
     CameraRoll,
     Alert,
-    Button,
     ScrollView,
     TouchableHighlight,
     TouchableOpacity,
@@ -18,6 +17,7 @@ import Icon from 'react-native-fa-icons';
 import Fuse from 'fuse.js';
 import ImagePreview from 'react-native-image-preview';
 
+import Button from './Button';
 import Gallery from '../models/Gallery';
 import Maps from "../models/Maps";
 import VoiceRecognition from '../models/VoiceRecognition';
@@ -109,12 +109,18 @@ class GalleryView extends Component {
                             {item.data.name}
                         </Text>
                 
-                        <Text style={styles.propertyTitle}>
-                            Adresa
-                        </Text>
-                        <Text style={styles.propertyValue}>
-                            {item.data.street.formatted_address}
-                        </Text>
+                        {
+                            item.data.street &&
+                            <View>
+                                <Text style={styles.propertyTitle}>
+                                    Adresa
+                                </Text>
+                                <Text style={styles.propertyValue}>
+                                    {item.data.street.formatted_address}
+                                </Text>
+                            </View>
+                        }
+                        
                         
                         <Text style={styles.propertyTitle}>
                            Blízke miesta
@@ -152,7 +158,7 @@ class GalleryView extends Component {
                 <TouchableHighlight 
                     onPress={this.clearSearch} style={styles.clearSearchButton}>
                     <Text style={styles.defaultButtonText}>
-                        <Icon name='times' /> Ukončiť vyhľadávanie "{this.state.query}"
+                        <Icon name='times' /> Zrušiť vyhľadávanie "{this.state.query}"
                     </Text>
                 </TouchableHighlight>
             );
@@ -184,7 +190,17 @@ class GalleryView extends Component {
                 />
 
                 <View style={styles.bottomActions}>
+                    <Button 
+                        onPress={() => this._carousel.snapToPrev()}
+                        style={styles.galleryPrev} 
+                        icon={'chevron-left'} 
+                        raised={true} />
                     { this.renderBottomButton() }
+                    <Button 
+                        onPress={() => this._carousel.snapToNext()}
+                        style={styles.galleryNext} 
+                        icon={'chevron-right'} 
+                        raised={true} />
                 </View>
             </View>
         )
@@ -243,6 +259,7 @@ class GalleryView extends Component {
     }
 
     clearSearch = () => {
+        Tts.speak('Vyhľadávanie zrušené');
         this.setState({
             query: ''
         });
@@ -261,7 +278,7 @@ const bottomButton = {
     alignSelf: 'center',
     borderRadius: 14,
     padding: 20,
-    width: '90%',
+    flex: 1,
     marginHorizontal: 5
 };
 
@@ -300,9 +317,11 @@ const styles = StyleSheet.create({
     },
     bottomActions: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 5,
         width: '100%',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        flex: 1,
+        flexDirection: 'row'
     },
     galleryButtons: {
         position: 'absolute',

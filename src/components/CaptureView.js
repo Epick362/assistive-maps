@@ -59,9 +59,6 @@ class CaptureView extends Component {
       }
 
     componentDidMount() {
-        Voice.isAvailable()
-        .then(console.warn);
-
         ReactNativeHeading.start(5).then(didStart => {
             if (!didStart) {
                 console.error('ReactNativeHeading is not supported.')
@@ -89,6 +86,8 @@ class CaptureView extends Component {
             onMoveShouldSetPanResponder: (evt, gestureState) => !!this.getDirection(gestureState),
             onPanResponderMove: (evt, gestureState) => {
                 const drag = this.getDirection(gestureState);
+
+                console.warn('kekeke');
 
                 debouncedDragResponder(drag);
             },

@@ -18,7 +18,7 @@ export default class App extends Component {
             } else if (czVoice) {
                 Tts.setDefaultLanguage('cs-CZ');
             } else {
-                Tts.speak('Error, no suitable language pack found. The application required Slovak or Czech language pack is available on the device.');
+                Tts.speak('Error, no suitable language pack found. The application requires Slovak or Czech language pack is available on the device.');
             }
         });
         
@@ -29,7 +29,7 @@ export default class App extends Component {
         // Tutorial
         RNShakeEvent.addEventListener('shake', () => {
             Tts.stop();
-            Tts.speak('Vitajte v aplikácií Asistívna kamera. Pre odfotenie, kliknite kamkoľvek na obrazovku. Pre otvorenie galérie potiahnite prstom zdola hore, medzi fotkami sa presúvate potiahnutím zprava doľava. Túto nápovedu vyvoláte zahrkaním telefónu');
+            // Tts.speak('Vitajte v aplikácií Asistívna kamera. Pre odfotenie, kliknite kamkoľvek na obrazovku. Pre otvorenie galérie potiahnite prstom zdola hore, medzi fotkami sa presúvate potiahnutím zprava doľava. Túto nápovedu vyvoláte zahrkaním telefónu');
         });
     }
 
