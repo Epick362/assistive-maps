@@ -1,6 +1,7 @@
 import Voice from 'react-native-voice';
 import Tts from 'react-native-tts';
 import Sound from 'react-native-sound';
+import { Platform } from 'react-native';
 
 let completeSound = new Sound('recognition_complete.m4a', Sound.MAIN_BUNDLE);
 let startSound = new Sound('start_recognition.m4a', Sound.MAIN_BUNDLE);
@@ -38,13 +39,16 @@ class VoiceRecognition {
     }
 
     onSpeechErrorHandler(e) {
-       Tts.speak('Pri rozpoznávaní hlasu došlo k chybe.')
+        // Tts.speak('Pri rozpoznávaní hlasu došlo k chybe.')
     }
 
     recordPhotoName(text, timeout = 4500) {
         Tts.speak(text);
         setTimeout(() => {
-            startSound.play();
+            if (Platform.OS === 'ios') {
+                startSound.play();
+            }
+
             Voice.start('sk-SK');
         }, timeout);
 
@@ -53,7 +57,9 @@ class VoiceRecognition {
 
     resolveWithText() {
         Voice.stop();
-        completeSound.play();
+        if (Platform.OS === 'ios') {
+            completeSound.play();
+        }
 
         setTimeout(() => this.resolve(this.recognizedText), 1000);
     }

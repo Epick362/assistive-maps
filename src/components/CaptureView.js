@@ -203,6 +203,8 @@ class CaptureView extends Component {
         }
 
         Tts.stop();
+        Tts.speak('Cvak!');
+
 
         this.camera.takePictureAsync()
         .then(data => {
@@ -225,7 +227,7 @@ class CaptureView extends Component {
     recordCapturedName = () => {
         let voiceRec = new VoiceRecognition();
 
-        return voiceRec.recordPhotoName('Cvak! Po zaznení tónu, vyslovte názov fotky')
+        return voiceRec.recordPhotoName('Po zaznení tónu, vyslovte názov fotky')
         .then((recognizedText) => {
             Tts.speak('Fotka uložená pod menom: ' + recognizedText);
 

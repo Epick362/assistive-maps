@@ -16,18 +16,7 @@ class Storage {
         });
     }
 
-    static getPhotoByIdentifier(id) {
-        return Storage.retrieve(PHOTOS_LIBRARY_KEY)
-        .then(data => {
-            if (!data || !data[id]) {
-                return null;
-            }
-
-            return data[id];
-        })
-    }
-
-    static appendMetadataToStorage(photo, metaData) {
+    static appendMetadata(photo, metaData) {
         return Storage.retrieve(PHOTOS_LIBRARY_KEY)
         .then((library) => {
             if (!library) {

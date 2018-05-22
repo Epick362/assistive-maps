@@ -29,12 +29,12 @@ class Photo {
                 }
             })
             .then((photo) => {
-                return Storage.appendMetadataToStorage(photo, meta);
+                return Storage.appendMetadata(photo, meta);
             })
         } else {
             return Gallery.save({uri: data.uri})
             .then((photo) => {
-                return Storage.appendMetadataToStorage(photo, meta);
+                return Storage.appendMetadata(photo, meta);
             });
         }
     }
