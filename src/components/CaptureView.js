@@ -110,8 +110,8 @@ class CaptureView extends Component {
                 permissionDialogTitle={'Permission to use camera'}
                 permissionDialogMessage={'We need your permission to use your camera phone'}
             >
-                <TouchableWithoutFeedback style={styles.touchableCapture} onPress={this.takePicture}>
-                    <View />
+                <TouchableWithoutFeedback onPress={this.takePicture}>
+                    <View style={styles.touchableCapture} />
                 </TouchableWithoutFeedback>
                 <View style={styles.bottomActions}>
                     <Button 
