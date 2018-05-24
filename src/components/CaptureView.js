@@ -13,7 +13,8 @@ import {
     DeviceEventEmitter,
     Modal,
     PanResponder,
-    Vibration
+    Vibration,
+    Platform
 } from "react-native";
 
 import { RNCamera } from "react-native-camera";
@@ -68,9 +69,8 @@ class CaptureView extends Component {
         DeviceEventEmitter.addListener('headingUpdated', this.updateHeading);
 
         const locationOptions = {
-            enableHighAccuracy: true,
+            enableHighAccuracy: Platform.OS === 'ios' ? true : false,
             timeout: 20000,
-            maximumAge: 1000,
             distanceFilter: 10
         };
 
@@ -86,8 +86,6 @@ class CaptureView extends Component {
             onMoveShouldSetPanResponder: (evt, gestureState) => !!this.getDirection(gestureState),
             onPanResponderMove: (evt, gestureState) => {
                 const drag = this.getDirection(gestureState);
-
-                console.warn('kekeke');
 
                 debouncedDragResponder(drag);
             },
@@ -110,9 +108,6 @@ class CaptureView extends Component {
                 permissionDialogTitle={'Permission to use camera'}
                 permissionDialogMessage={'We need your permission to use your camera phone'}
             >
-                <TouchableWithoutFeedback onPress={this.takePicture}>
-                    <View style={styles.touchableCapture} />
-                </TouchableWithoutFeedback>
                 <View style={styles.bottomActions}>
                     <Button 
                         style={styles.actionGallery} 
@@ -123,6 +118,9 @@ class CaptureView extends Component {
                     ></Button>
                     <Button style={styles.actionCapture} onPress={this.takePicture} icon={'camera'} raised={true}></Button>
                 </View>
+                <TouchableWithoutFeedback onPress={this.takePicture}>
+                    <View style={styles.touchableCapture} />
+                </TouchableWithoutFeedback>
             </RNCamera>
 
             <Modal
@@ -334,6 +332,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         bottom: 30,
+        zIndex: 5
     },
     'actionGallery': {
         
